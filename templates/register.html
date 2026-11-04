@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>注册 - 学生管理系统</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-logo lg">学</span>
+      <h2>注册账号</h2>
+      <p class="muted">注册后默认为普通用户，可管理学生信息</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-area">
+          {% for cat, msg in messages %}
+            <div class="flash flash-{{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" class="form" novalidate>
+      <div class="form-item{% if errors.get('username') %} has-error{% endif %}">
+        <label class="form-label">用户名</label>
+        <input class="input" type="text" name="username" value="{{ old.username }}" placeholder="3-20 位字母、数字或下划线">
+        {% if errors.get('username') %}<div class="form-error">{{ errors.username }}</div>{% endif %}
+      </div>
+      <div class="form-item{% if errors.get('password') %} has-error{% endif %}">
+        <label class="form-label">密码</label>
+        <input class="input" type="password" name="password" placeholder="至少 6 位">
+        {% if errors.get('password') %}<div class="form-error">{{ errors.password }}</div>{% endif %}
+      </div>
+      <div class="form-item{% if errors.get('confirm') %} has-error{% endif %}">
+        <label class="form-label">确认密码</label>
+        <input class="input" type="password" name="confirm" placeholder="再次输入密码">
+        {% if errors.get('confirm') %}<div class="form-error">{{ errors.confirm }}</div>{% endif %}
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">注 册</button>
+    </form>
+
+    <p class="auth-link">已有账号？<a href="{{ url_for('login') }}">返回登录</a></p>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}新增用户 - 学生管理系统{% endblock %}
+{% block page_title %}新增用户{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+  <form method="post" class="form-grid" novalidate>
+    <div class="form-item{% if errors.get('username') %} has-error{% endif %}">
+      <label class="form-label">用户名 *</label>
+      <input class="input" type="text" name="username" value="{{ old.username }}" placeholder="3-20 位字母、数字或下划线">
+      {% if errors.get('username') %}<div class="form-error">{{ errors.username }}</div>{% endif %}
+    </div>
+    <div class="form-item{% if errors.get('password') %} has-error{% endif %}">
+      <label class="form-label">初始密码 *</label>
+      <input class="input" type="password" name="password" placeholder="至少 6 位">
+      {% if errors.get('password') %}<div class="form-error">{{ errors.password }}</div>{% endif %}
+    </div>
+    <div class="form-item{% if errors.get('role') %} has-error{% endif %}">
+      <label class="form-label">角色 *</label>
+      <select class="input" name="role">
+        <option value="user" {% if old.role == 'user' %}selected{% endif %}>普通用户（管理学生信息）</option>
+        <option value="admin" {% if old.role == 'admin' %}selected{% endif %}>管理员（可管理用户）</option>
+      </select>
+      {% if errors.get('role') %}<div class="form-error">{{ errors.role }}</div>{% endif %}
+    </div>
+    <div class="form-actions form-item-full">
+      <button class="btn btn-primary" type="submit">创 建</button>
+      <a class="btn" href="{{ url_for('users') }}">取 消</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

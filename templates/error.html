@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ code }} - 学生管理系统</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+<div class="auth-wrap">
+  <div class="auth-card error-card">
+    <div class="error-code">{{ code }}</div>
+    <p class="error-msg">{{ msg }}</p>
+    <a class="btn btn-primary" href="{{ url_for('dashboard') }}">返回首页</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ '新增专业' if mode == 'add' else '编辑专业' }} - 学生管理系统{% endblock %}
+{% block page_title %}{{ '新增专业' if mode == 'add' else '编辑专业' }}{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+  <form method="post" class="form-grid" novalidate>
+    <div class="form-item{% if errors.get('name') %} has-error{% endif %}">
+      <label class="form-label">专业名称 *</label>
+      <input class="input" type="text" name="name" value="{{ old.get('name') or '' }}" placeholder="如 软件工程">
+      {% if errors.get('name') %}<div class="form-error">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="form-item">
+      <label class="form-label">备注</label>
+      <input class="input" type="text" name="remark" value="{{ old.get('remark') or '' }}" placeholder="选填">
+    </div>
+    <div class="form-actions form-item-full">
+      <button class="btn btn-primary" type="submit">保 存</button>
+      <a class="btn" href="{{ url_for('majors') }}">取 消</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

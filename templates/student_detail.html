@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}学生详情 - 学生管理系统{% endblock %}
+{% block page_title %}学生详情{% endblock %}
+
+{% block content %}
+<div class="card detail-card">
+  <div class="detail-head">
+    <span class="avatar-lg">{{ s.name[:1] }}</span>
+    <div>
+      <div class="detail-name">{{ s.name }}
+        {% if s.gender == '男' %}<span class="badge badge-blue">男</span>
+        {% else %}<span class="badge badge-pink">女</span>{% endif %}
+      </div>
+      <div class="muted">{{ s.stu_no }}</div>
+    </div>
+  </div>
+
+  <table class="table detail-table">
+    <tbody>
+      <tr><th>学号</th><td>{{ s.stu_no }}</td><th>姓名</th><td>{{ s.name }}</td></tr>
+      <tr><th>性别</th><td>{{ s.gender }}</td><th>班级</th><td>{{ s.class_name }}</td></tr>
+      <tr><th>专业</th><td>{{ s.major or '—' }}</td><th>手机号</th><td>{{ s.phone or '—' }}</td></tr>
+      <tr><th>入学年份</th><td>{{ s.enroll_year if s.enroll_year is not none else '—' }}</td>
+          <th>录入时间</th><td>{{ s.created_at.strftime('%Y-%m-%d %H:%M') if s.created_at else '—' }}</td></tr>
+      <tr><th>备注</th><td colspan="3">{{ s.remark or '—' }}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="form-actions">
+    <a class="btn btn-primary" href="{{ url_for('student_edit', sid=s.id) }}">编 辑</a>
+    <a class="btn" href="{{ url_for('students') }}">返回列表</a>
+  </div>
+</div>
+{% endblock %}

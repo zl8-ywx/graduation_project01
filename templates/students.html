@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}学生管理 - 学生管理系统{% endblock %}
+{% block page_title %}学生管理{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form class="toolbar" method="get" action="{{ url_for('students') }}">
+    <input class="input toolbar-q" type="text" name="q" value="{{ q }}" placeholder="学号 / 姓名 / 手机号 / 专业 / 班级">
+    <select class="input" name="gender">
+      <option value="">全部性别</option>
+      <option value="男" {% if gender == '男' %}selected{% endif %}>男</option>
+      <option value="女" {% if gender == '女' %}selected{% endif %}>女</option>
+    </select>
+    <select class="input" name="class_id">
+      <option value="">全部班级</option>
+      {% for c in classes %}
+      <option value="{{ c.id }}" {% if class_id|int == c.id %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit">搜索</button>
+    <a class="btn" href="{{ url_for('students') }}">重置</a>
+    <span class="toolbar-spacer"></span>
+    <a class="btn btn-primary" href="{{ url_for('student_add') }}">+ 新增学生</a>
+  </form>
+</div>
+
+<div class="card table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>学号</th><th>姓名</th><th>性别</th><th>班级</th><th>专业</th>
+        <th>手机号</th><th>入学年份</th><th>录入时间</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in rows %}
+      <tr>
+        <td>{{ s.stu_no }}</td>
+        <td>{{ s.name }}</td>
+        <td>{% if s.gender == '男' %}<span class="badge badge-blue">男</span>
+            {% else %}<span class="badge badge-pink">女</span>{% endif %}</td>
+        <td>{{ s.class_name }}</td>
+        <td>{{ s.major or '—' }}</td>
+        <td>{{ s.phone or '—' }}</td>
+        <td>{{ s.enroll_year if s.enroll_year is not none else '—' }}</td>
+        <td class="muted">{{ s.created_at.strftime('%Y-%m-%d') }}</td>
+        <td>
+          <div class="ops">
+            <a class="btn btn-sm" href="{{ url_for('student_detail', sid=s.id) }}">详情</a>
+            <a class="btn btn-sm" href="{{ url_for('student_edit', sid=s.id) }}">编辑</a>
+            <form method="post" action="{{ url_for('student_delete', sid=s.id) }}" class="js-del" data-confirm="确定删除学生 {{ s.name }}（学号 {{ s.stu_no }}）吗？删除后不可恢复。">
+              <button class="btn btn-sm btn-danger" type="submit">删除</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="empty">暂无学生数据{% if q or gender or class_id %}，换个筛选条件试试{% endif %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pager">
+    <span class="muted">共 {{ total }} 条记录 · 第 {{ page }} / {{ total_pages }} 页</span>
+    <div class="pager-btns">
+      {% if page > 1 %}
+      <a class="btn btn-sm" href="{{ url_for('students', page=page-1, q=q, gender=gender, class_id=class_id) }}">上一页</a>
+      {% endif %}
+      {% for p in pages %}
+        {% if p == '...' %}
+        <span class="pager-dots">…</span>
+        {% elif p == page %}
+        <span class="btn btn-sm btn-primary">{{ p }}</span>
+        {% else %}
+        <a class="btn btn-sm" href="{{ url_for('students', page=p, q=q, gender=gender, class_id=class_id) }}">{{ p }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page < total_pages %}
+      <a class="btn btn-sm" href="{{ url_for('students', page=page+1, q=q, gender=gender, class_id=class_id) }}">下一页</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

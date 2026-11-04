@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登录 - 学生管理系统</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-logo lg">学</span>
+      <h2>学生管理系统</h2>
+      <p class="muted">基于 Flask + MySQL 的网页端管理系统</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-area">
+          {% for cat, msg in messages %}
+            <div class="flash flash-{{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" class="form" novalidate>
+      <div class="form-item">
+        <label class="form-label">用户名</label>
+        <input class="input" type="text" name="username" placeholder="请输入用户名" autofocus>
+      </div>
+      <div class="form-item">
+        <label class="form-label">密码</label>
+        <input class="input" type="password" name="password" placeholder="请输入密码">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">登 录</button>
+    </form>
+
+    <p class="auth-link">还没有账号？<a href="{{ url_for('register') }}">立即注册</a>
+      &nbsp;|&nbsp; 默认管理员：admin / 123456</p>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}修改密码 - 学生管理系统{% endblock %}
+{% block page_title %}修改密码{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+  <form method="post" class="form-grid" novalidate>
+    <div class="form-item{% if errors.get('old_password') %} has-error{% endif %}">
+      <label class="form-label">原密码 *</label>
+      <input class="input" type="password" name="old_password" placeholder="请输入当前密码">
+      {% if errors.get('old_password') %}<div class="form-error">{{ errors.old_password }}</div>{% endif %}
+    </div>
+    <div class="form-item{% if errors.get('new_password') %} has-error{% endif %}">
+      <label class="form-label">新密码 *</label>
+      <input class="input" type="password" name="new_password" placeholder="至少 6 位">
+      {% if errors.get('new_password') %}<div class="form-error">{{ errors.new_password }}</div>{% endif %}
+    </div>
+    <div class="form-item{% if errors.get('confirm') %} has-error{% endif %}">
+      <label class="form-label">确认新密码 *</label>
+      <input class="input" type="password" name="confirm" placeholder="再次输入新密码">
+      {% if errors.get('confirm') %}<div class="form-error">{{ errors.confirm }}</div>{% endif %}
+    </div>
+    <div class="form-actions form-item-full">
+      <button class="btn btn-primary" type="submit">保存修改</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

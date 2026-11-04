@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}首页看板 - 学生管理系统{% endblock %}
+{% block page_title %}首页看板{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card stat-blue">
+    <div class="stat-label">学生总数</div>
+    <div class="stat-value">{{ stats.total }}</div>
+  </div>
+  <div class="stat-card stat-green">
+    <div class="stat-label">男生人数</div>
+    <div class="stat-value">{{ stats.male }}</div>
+  </div>
+  <div class="stat-card stat-pink">
+    <div class="stat-label">女生人数</div>
+    <div class="stat-value">{{ stats.female }}</div>
+  </div>
+  <div class="stat-card stat-orange">
+    <div class="stat-label">班级数量</div>
+    <div class="stat-value">{{ stats.class_count }}</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-head">学生性别分布</div>
+    <div class="card-body chart-box">
+      <canvas id="genderChart" data-type="doughnut"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">各班级人数分布</div>
+    <div class="card-body chart-box">
+      <canvas id="classChart" data-type="bar"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="card-head">各入学年份人数趋势</div>
+    <div class="card-body chart-box">
+      <canvas id="yearChart" data-type="line"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">最近录入的学生</div>
+    <div class="card-body">
+      {% if stats.recent %}
+      <table class="table table-plain">
+        <thead>
+          <tr><th>学号</th><th>姓名</th><th>性别</th><th>班级</th><th>录入时间</th></tr>
+        </thead>
+        <tbody>
+          {% for r in stats.recent %}
+          <tr>
+            <td>{{ r.stu_no }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.gender }}</td>
+            <td>{{ r.class_name }}</td>
+            <td class="muted">{{ r.created_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty">暂无学生数据，去 <a href="{{ url_for('students') }}">学生管理</a> 添加第一条吧</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>window.DASH_DATA = {{ stats|tojson }};</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

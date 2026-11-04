@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}专业管理 - 学生管理系统{% endblock %}
+{% block page_title %}专业管理{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="toolbar">
+    <span class="muted">管理系统内的专业，每个班级隶属于一个专业</span>
+    <span class="toolbar-spacer"></span>
+    <a class="btn btn-primary" href="{{ url_for('major_add') }}">+ 新增专业</a>
+  </div>
+</div>
+
+<div class="card table-card">
+  <table class="table">
+    <thead>
+      <tr><th>ID</th><th>专业名称</th><th>所属班级</th><th>备注</th><th>创建时间</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      {% for m in rows %}
+      <tr>
+        <td>{{ m.id }}</td>
+        <td>{{ m.name }}</td>
+        <td>{% if m.class_count %}<span class="badge badge-blue">{{ m.class_count }} 个班级</span>
+            {% else %}<span class="muted">暂无班级</span>{% endif %}</td>
+        <td>{{ m.remark or '—' }}</td>
+        <td class="muted">{{ m.created_at.strftime('%Y-%m-%d %H:%M') if m.created_at else '—' }}</td>
+        <td>
+          <div class="ops">
+            <a class="btn btn-sm" href="{{ url_for('major_edit', mid=m.id) }}">编辑</a>
+            <form method="post" action="{{ url_for('major_delete', mid=m.id) }}" class="js-del"
+                  data-confirm="确定删除专业「{{ m.name }}」吗？删除后不可恢复。">
+              <button class="btn btn-sm btn-danger" type="submit">删除</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty">暂无专业，点击右上角「新增专业」添加</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

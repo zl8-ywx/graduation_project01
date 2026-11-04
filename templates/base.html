@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}学生管理系统{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% set ep = request.endpoint or '' %}
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}" title="返回首页看板">
+      <span class="brand-logo">学</span>
+      <span class="brand-text">学生管理系统</span>
+    </a>
+    <nav class="nav">
+      <a class="nav-item {% if ep == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">首页看板</a>
+      <a class="nav-item {% if ep in ('students', 'student_add', 'student_edit', 'student_detail') %}active{% endif %}" href="{{ url_for('students') }}">学生管理</a>
+      <a class="nav-item {% if ep in ('classes', 'class_add', 'class_edit') %}active{% endif %}" href="{{ url_for('classes') }}">班级管理</a>
+      <a class="nav-item {% if ep in ('majors', 'major_add', 'major_edit') %}active{% endif %}" href="{{ url_for('majors') }}">专业管理</a>
+      {% if me and me.role == 'admin' %}
+      <a class="nav-item {% if ep in ('users', 'user_add') %}active{% endif %}" href="{{ url_for('users') }}">用户管理</a>
+      {% endif %}
+      <a class="nav-item {% if ep == 'profile' %}active{% endif %}" href="{{ url_for('profile') }}">修改密码</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a class="nav-item" href="{{ url_for('logout') }}">退出登录</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuToggle" type="button" aria-label="展开菜单">&#9776;</button>
+      <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+      <div class="user-menu" id="userMenu">
+        <button class="user-box" id="userMenuBtn" type="button" aria-haspopup="true">
+          <span class="user-avatar">{{ ((me.username if me else '?')|first)|upper }}</span>
+          <span class="user-name">{{ me.username if me else '' }}</span>
+          {% if me and me.role == 'admin' %}<span class="badge badge-admin">管理员</span>
+          {% else %}<span class="badge badge-user">普通用户</span>{% endif %}
+          <span class="caret">&#9662;</span>
+        </button>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-head">
+            <div class="user-dropdown-user">{{ me.username if me else '' }}</div>
+            <div class="user-dropdown-role muted">{% if me and me.role == 'admin' %}管理员{% else %}普通用户{% endif %}</div>
+          </div>
+          <a class="user-dropdown-item" href="{{ url_for('profile') }}">修改密码</a>
+          <a class="user-dropdown-item danger" href="{{ url_for('logout') }}">退出登录</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-area">
+            {% for cat, msg in messages %}
+              <div class="flash flash-{{ cat }}">{{ msg }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">学生管理系统 &copy; 2026 &middot; Flask + MySQL</footer>
+  </div>
+</div>
+<div class="mask" id="mask"></div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

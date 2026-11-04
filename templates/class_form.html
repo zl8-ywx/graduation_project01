@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ '新增班级' if mode == 'add' else '编辑班级' }} - 学生管理系统{% endblock %}
+{% block page_title %}{{ '新增班级' if mode == 'add' else '编辑班级' }}{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+  <form method="post" class="form-grid" novalidate>
+    <div class="form-item{% if errors.get('name') %} has-error{% endif %}">
+      <label class="form-label">班级名称 *</label>
+      <input class="input" type="text" name="name" value="{{ old.get('name') or '' }}" placeholder="如 软件开发231">
+      {% if errors.get('name') %}<div class="form-error">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="form-item{% if errors.get('major_id') %} has-error{% endif %}">
+      <label class="form-label">所属专业 *</label>
+      <select class="input" name="major_id">
+        <option value="">请选择专业</option>
+        {% for m in majors_all %}
+        <option value="{{ m.id }}" {% if old.get('major_id')|string == m.id|string %}selected{% endif %}>{{ m.name }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.get('major_id') %}<div class="form-error">{{ errors.major_id }}</div>{% endif %}
+    </div>
+    <div class="form-actions form-item-full">
+      <button class="btn btn-primary" type="submit">保 存</button>
+      <a class="btn" href="{{ url_for('classes') }}">取 消</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

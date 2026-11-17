@@ -12,7 +12,9 @@
 """
 import functools
 import math
+import os
 import re
+import time
 
 import pymysql
 from flask import (Flask, abort, flash, g, redirect, render_template,
@@ -887,6 +889,18 @@ def user_delete(uid):
 # 错误页
 # ---------------------------------------------------------------------------
 
+@app.route("/healthz")
+def healthz():
+    """健康检查：数据库连通返回 200，否则 503（供 K8s 探针与流水线验证使用）"""
+    try:
+        cur = get_db().cursor()
+        cur.execute("SELECT 1")
+        cur.fetchone()
+        return {"status": "ok"}, 200
+    except Exception:
+        return {"status": "db_unavailable"}, 503
+
+
 @app.errorhandler(403)
 def forbidden(_e):
     return render_template("error.html", code=403, msg="没有权限访问该页面"), 403
@@ -897,6 +911,24 @@ def not_found(_e):
     return render_template("error.html", code=404, msg="页面不存在或数据已被删除"), 404
 
 
+def init_db_with_retry(attempts=10, interval=3):
+    """带重试的数据库初始化：MySQL 未就绪时不直接退出，间隔重试"""
+    last_err = None
+    for _ in range(attempts):
+        try:
+            init_app_db()
+            return
+        except Exception as err:  # noqa: BLE001 连接失败统一重试
+            last_err = err
+            time.sleep(interval)
+    raise RuntimeError("数据库初始化失败（MySQL 未就绪？）: {}".format(last_err))
+
+
+# 模块导入时即初始化数据库（带重试），保证 gunicorn 启动前数据表已就绪
+init_db_with_retry()
+
+
 if __name__ == "__main__":
-    init_app_db()
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    # 仅本地开发使用 Flask 自带服务器；容器内由 gunicorn 启动
+    app.run(host="0.0.0.0", port=5000,
+            debug=os.environ.get("FLASK_DEBUG", "0") == "1")

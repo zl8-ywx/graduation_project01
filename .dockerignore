@@ -1,0 +1,13 @@
+# 构建上下文排除：减小镜像体积、避免敏感/无关文件进入镜像
+__pycache__/
+*.py[cod]
+.git/
+.gitignore
+.idea/
+*.log
+.screenshots/
+docs/
+deploy/
+README.md
+schema.sql
+config.example.py
